@@ -138,7 +138,10 @@ table.prog col.off,table.prog th.off,table.prog td.off{opacity:.3}
 /* ?frame: shown inside the Econ site, which supplies the page title, menu and scrolling */
 html.frame body{padding:0}
 html.frame h1{display:none}
-html.frame .lede{margin-top:0}
+html.frame .wrap{max-width:none}
+html.frame .lede{margin-top:0;max-width:none}
+html.frame .lede p{max-width:none}
+html.frame .notes{max-width:none}
 </style>
 <script>if(/[?&]frame\b/.test(location.search))document.documentElement.classList.add("frame");</script>
 
