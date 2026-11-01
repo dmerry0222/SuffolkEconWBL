@@ -32,8 +32,8 @@ h3{font-size:.9375rem;font-weight:600;color:var(--navy);margin:0 0 10px;line-hei
 .chartbox{position:relative;border-top:3px solid var(--navy);padding-top:16px}
 .chartscroll{overflow-x:auto;transition:opacity .18s ease}
 .invalid .chartscroll{opacity:.12;filter:grayscale(1)}
-#chart{display:block;width:1824px;max-width:none;height:auto}
-#keypane{position:absolute;left:0;top:16px;z-index:3;background:#fff;width:188px}
+#chart{display:block;width:1776px;max-width:none;height:auto}
+#keypane{position:absolute;left:0;top:16px;z-index:3;background:#fff;width:140px}
 .invalid #keypane{opacity:.12;pointer-events:none}
 .kgrp{position:absolute;left:0;right:10px;pointer-events:none}
 .kitem{display:flex;align-items:flex-start;justify-content:flex-end;gap:6px;margin-bottom:5px}
@@ -274,8 +274,8 @@ var PARAMS=JSON.parse(JSON.stringify(DEFAULTS));
    3. CONFIG: every visual decision.
    ============================================================ */
 var CONFIG={
-  canvas:{ width:1824, targetHeight:970, padLeft:362, padRight:54, padTop:46, padBottom:34 },
-  keyWidth:188,
+  canvas:{ width:1776, targetHeight:970, padLeft:314, padRight:54, padTop:46, padBottom:34 },
+  keyWidth:140,
 
   /* bands top to bottom; members stack contiguously from the band baseline up */
   groups:[
