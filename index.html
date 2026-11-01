@@ -197,7 +197,8 @@ a.scard:hover .sarrow,a.nrow:hover .sarrow,a.scard:active .sarrow,a.nrow:active 
 .jsearch input{flex:0 1 420px;min-width:220px;font:400 .9375rem var(--sans);color:var(--ink);padding:9px 12px;
   border:1px solid var(--rule);background:var(--bg)}
 .jsearch input:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
-.jwrap{overflow-x:clip}   /* clip, not auto, so the sticky header can stick to the page scroll */
+.jwrap{max-height:640px;overflow:auto;border:1px solid var(--rule);border-top:0}   /* about ten rows show; the rest scroll inside the box, under a pinned header */
+.flowframe{display:block;width:100%;height:900px;border:0}
 .jtable{width:100%;border-collapse:collapse;font-size:.875rem}
 .jtable th{position:sticky;top:0;z-index:2;background:var(--bg);text-align:left;font-size:.8125rem;font-weight:600;
   color:var(--navy);padding:10px 12px;border-bottom:2px solid var(--navy);vertical-align:middle;white-space:nowrap}
@@ -333,6 +334,7 @@ select{font:400 .875rem var(--sans);color:var(--navy);padding:7px 10px;border:1p
     <li><a class="nav-link" href="#faculty" data-sec="faculty">Faculty workload and<br>student preparation</a></li>
     <li><a class="nav-link" href="#curriculum" data-sec="curriculum">A highly employable<br>major and curriculum</a></li>
     <li><a class="nav-link" href="#available" data-sec="available">Sample live postings<br>for Econ students</a></li>
+    <li><a class="nav-link" href="#flow" data-sec="flow">Modeling placements<br>for Econ students</a></li>
     <li>
       <a class="nav-link nav-doc" href="Economics_Research.html">
         <svg class="nd-ic" viewBox="0 0 24 30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h11l5 5v21H4z"/><path d="M15 2v5h5"/><path d="M8 13h8M8 17h8M8 21h5"/></svg>
@@ -431,6 +433,12 @@ select{font:400 .875rem var(--sans);color:var(--navy);padding:7px 10px;border:1p
 </table>
 </div>
 <p class="jnone" id="jnone" hidden>No postings match that search.</p>
+</section>
+
+<section id="flow">
+<hr class="divider">
+<h3 class="subhead">A model of how Economics students could move through the requirement</h3>
+<iframe class="flowframe" id="flowframe" src="Economics%20WBL%20Flow.html?frame=1" title="Economics work-based learning flow model" scrolling="no"></iframe>
 </section>
 
 <div class="prov" id="sources">
@@ -698,6 +706,10 @@ function jobModal(id){
     "<h4>Job description</h4><div class='mdesc'>"+esc(j.desc)+"</div>"+
     "<p><a href='"+esc(j.url)+"' target='_blank' rel='noopener noreferrer'>View job posting in Handshake</a></p>");
 }
+window.addEventListener("message",function(e){
+  var f=document.getElementById("flowframe");
+  if(f&&e.source===f.contentWindow&&e.data&&e.data.frameHeight) f.style.height=Math.ceil(e.data.frameHeight)+"px";
+});
 document.addEventListener("click",function(e){
   var a=e.target.closest("[data-job]");
   if(a){e.preventDefault(); jobModal(a.getAttribute("data-job"));}

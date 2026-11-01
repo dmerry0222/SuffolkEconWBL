@@ -1,0 +1,1094 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Economics WBL Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#15284B; --gold:#E7AB2A; --sky:#3CB4E5; --teal:#40C1AC; --slate:#7A6E9B; --brick:#B0543E;
+  --body:#595959; --ink:#000000; --bg:#FFFFFF;
+  --rule:rgba(21,40,75,.14); --t02:rgba(21,40,75,.03); --t05:rgba(21,40,75,.05);
+  --sans:"Libre Franklin","Segoe UI",Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--body);font-family:var(--sans);font-size:1rem;line-height:1.65;
+  -webkit-font-smoothing:antialiased;margin:0;
+  padding-left:max(22px,env(safe-area-inset-left,0px));
+  padding-right:max(22px,env(safe-area-inset-right,0px));
+  padding-block:40px 96px;
+}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:1.75rem;font-weight:600;color:var(--ink);letter-spacing:-.012em;line-height:1.22;margin:0 0 8px;text-wrap:balance}
+.lede{font-size:1.0625rem;max-width:78ch;margin:0 0 26px;padding-bottom:22px;border-bottom:1px solid var(--rule)}
+.lede p{margin:0 0 13px}
+.lede p:last-child{margin:0}
+h2{font-size:1.25rem;font-weight:600;color:var(--navy);margin:0 0 14px;line-height:1.3}
+h3{font-size:.9375rem;font-weight:600;color:var(--navy);margin:0 0 10px;line-height:1.35}
+
+/* chart: the key is pinned to the left and the flow scrolls behind it */
+.chartbox{position:relative;border-top:3px solid var(--navy);padding-top:16px}
+.chartscroll{overflow-x:auto;transition:opacity .18s ease}
+.invalid .chartscroll{opacity:.12;filter:grayscale(1)}
+#chart{display:block;width:1824px;max-width:none;height:auto}
+#keypane{position:absolute;left:0;top:16px;z-index:3;background:#fff;width:188px}
+.invalid #keypane{opacity:.12;pointer-events:none}
+.kgrp{position:absolute;left:0;right:10px;pointer-events:none}
+.kitem{display:flex;align-items:flex-start;justify-content:flex-end;gap:6px;margin-bottom:5px}
+.kitem .klab{font:500 10.5px/1.25 var(--sans);color:var(--navy);text-align:right}
+.kitem .ksw{width:9px;height:9px;flex:none;margin-top:2px}
+#kctrl{position:absolute;left:0;right:10px}
+#kprogs{margin-bottom:16px}
+.krow{display:flex;align-items:center;justify-content:flex-end;gap:7px;margin-bottom:4px;
+  font:500 10.5px/1.3 var(--sans);color:var(--navy);cursor:pointer;text-align:right}
+.krow input{width:13px;height:13px;margin:0;flex:none;accent-color:#15284B;cursor:pointer}
+.krow input:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
+.krow.on{font-weight:600}
+.lanenum{font:600 9px var(--sans);fill:var(--navy);font-variant-numeric:tabular-nums}
+.poolnum{font:600 10px var(--sans);fill:#fff;font-variant-numeric:tabular-nums}
+.failnum{font:600 10px var(--sans);fill:#7E3828;font-variant-numeric:tabular-nums}
+.intnum{font:600 10px var(--sans);fill:#fff;font-variant-numeric:tabular-nums}
+.accelnum{font:600 9.5px var(--sans);fill:#9C4634;font-variant-numeric:tabular-nums}
+.zeronum{font:400 9.5px var(--sans);fill:#B9A39C;font-variant-numeric:tabular-nums}
+.exitnum{font:600 9.5px var(--sans);fill:#9C4634;font-variant-numeric:tabular-nums}
+.tick{font:600 10.5px var(--sans);fill:var(--navy);letter-spacing:.02em}
+.cohlab{font:400 9.5px var(--sans);fill:var(--body)}
+.cohlab tspan.b{font-weight:600;fill:var(--navy)}
+.exitlab{font:400 9px var(--sans);fill:#8A8A8A}
+.exitlab tspan.b{font-weight:600;fill:#9C4634}
+.colband{cursor:pointer}
+.colband:hover{fill:rgba(21,40,75,.04)}
+
+#overbox{position:absolute;inset:16px 0 0;display:flex;align-items:center;justify-content:center;z-index:4}
+#overbox[hidden]{display:none}
+#overmsg{margin:0;max-width:34ch;text-align:center;background:#fff;border:1px solid var(--rule);
+  border-left:3px solid var(--brick);padding:16px 20px;font-size:.9375rem;line-height:1.5;color:#1a1a1a;
+  box-shadow:0 8px 26px rgba(21,40,75,.12)}
+#overmsg b{color:var(--brick);font-weight:600}
+
+.panel{margin-top:40px;border-top:1px solid var(--rule);padding-top:28px}
+.ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:30px 42px;margin-top:34px}
+.grp{min-width:0}
+.row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:8px;margin-bottom:3px}
+.row label{font-size:.8125rem;line-height:1.35;color:#1a1a1a}
+.row output{font-size:.8125rem;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums}
+.row output.over{color:var(--brick)}
+input[type=range]{width:100%;margin:0 0 13px;accent-color:#15284B;height:20px}
+input[type=range]:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+input[type=range]:disabled{cursor:default}
+.capwrap{position:relative}
+.capwrap .capzone{position:absolute;top:0;height:20px;right:0;pointer-events:none;
+  left:calc(8px + (100% - 16px) * var(--cap,100) / 100);
+  border-left:1px solid rgba(21,40,75,.38);background:rgba(21,40,75,.06)}
+.sub{font-size:.75rem;color:#8A8A8A;margin:-4px 0 12px;line-height:1.45}
+.sub.over{color:var(--brick);font-weight:600;font-size:.8125rem}
+.swd{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:baseline}
+
+table.prog{border-collapse:collapse;font-size:.875rem}
+table.prog th{font-size:.75rem;font-weight:600;color:var(--navy);padding:0 10px 10px;text-align:center;vertical-align:bottom}
+table.prog th.first{text-align:left;padding-left:0;font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:#8A8A8A}
+table.prog th label{display:flex;align-items:center;gap:7px;justify-content:center;cursor:pointer;line-height:1.3}
+table.prog th input{width:15px;height:15px;accent-color:#15284B;cursor:pointer;flex:none}
+table.prog td{padding:4px 10px;border-top:1px solid rgba(21,40,75,.08);text-align:center}
+table.prog td.first{text-align:left;padding-left:0;font-weight:600;color:var(--navy);white-space:nowrap}
+table.prog td.first .en{display:block;font-size:.6875rem;font-weight:400;color:#8A8A8A;line-height:1.3}
+table.prog tr.tot td{border-top:2px solid var(--navy);font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums}
+table.prog col.off,table.prog th.off,table.prog td.off{opacity:.3}
+.yrin{width:62px;font:600 .875rem var(--sans);color:var(--navy);font-variant-numeric:tabular-nums;
+  border:0;border-bottom:1px solid var(--rule);background:none;padding:1px 2px;margin-left:3px}
+.yrin:hover{border-bottom-color:var(--navy)}
+.yrin:focus{outline:0;border-bottom:2px solid var(--navy)}
+.numin{width:58px;font:600 .9375rem var(--sans);color:var(--navy);font-variant-numeric:tabular-nums;
+  text-align:center;border:0;border-bottom:1px solid var(--rule);background:none;padding:2px 2px}
+.numin:hover{border-bottom-color:var(--navy)}
+.numin:focus{outline:0;border-bottom:2px solid var(--navy)}
+.numin:disabled{color:#AAA}
+.tablescroll{overflow-x:auto}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{appearance:none;background:none;border:1px solid var(--rule);font:600 .8125rem var(--sans);color:var(--navy);padding:8px 16px;cursor:pointer;transition:background .18s ease}
+.btn:hover{background:var(--t05)}
+.btn:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+
+#tip{position:absolute;opacity:0;pointer-events:none;transition:opacity .12s ease;background:#fff;
+  border:1px solid var(--rule);border-top:3px solid var(--navy);padding:12px 14px;font-size:.8125rem;
+  line-height:1.5;min-width:244px;z-index:6;box-shadow:0 8px 26px rgba(21,40,75,.16)}
+#tip.open{opacity:1;pointer-events:auto}
+#tip .tt{font-weight:600;color:var(--navy);font-size:.875rem;display:block;margin-bottom:2px;padding-right:22px}
+#tip .ts{display:block;font-size:.75rem;color:#8A8A8A;margin-bottom:7px}
+#tip table{border-collapse:collapse;width:100%}
+#tip td{padding:3px 6px;font-variant-numeric:tabular-nums;vertical-align:baseline}
+#tip tbody tr:nth-child(even){background:rgba(21,40,75,.045)}
+#tip td.v{text-align:right;padding-left:16px;color:#1a1a1a;white-space:nowrap}
+#tip td.lab{color:var(--body)}
+#tip tr.head td{font-weight:600;color:var(--navy)}
+#tip td.i1{padding-left:19px}
+#tip .dot{display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:baseline}
+.tipx{position:absolute;top:7px;right:8px;appearance:none;background:none;border:0;cursor:pointer;
+  font:400 17px/1 var(--sans);color:#8A8A8A;padding:3px 5px}
+.tipx:hover{color:var(--navy)}
+.tipx:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
+
+.notes{margin-top:44px;border-left:3px solid var(--rule);background:var(--t02);padding:18px 20px;font-size:.875rem;max-width:82ch}
+.notes p{margin:0 0 10px}
+.notes p:last-child{margin:0}
+.notes b{color:var(--navy);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ?frame: shown inside the Econ site, which supplies the page title, menu and scrolling */
+html.frame body{padding:0}
+html.frame h1{display:none}
+html.frame .lede{margin-top:0}
+</style>
+<script>if(/[?&]frame\b/.test(location.search))document.documentElement.classList.add("frame");</script>
+
+<div class="wrap">
+<h1 id="title">Economics work-based learning</h1>
+<div class="lede">
+<p>This represents six entering classes, combining incoming spring and fall first-year students for clarity. In each class’s sophomore spring, they enter the grey pool of students who might start searching for WBL. This timing is based off the earliest they might begin their placements after completing CE-200.</p>
+<p>Students either move up to their secured placement or into an “unsuccessful search” group, where they try again for a second time. If they are unsuccessful in that second search they move into an Experience Accelerator program through the Career Center, with intensive 1:1 coaching, alumni interaction, and other services to get them into a successful placement.</p>
+<p>The top rail indicates students who graduate without a placement (0 under the model’s current default values). You can adjust the values below to model different scenarios.</p>
+</div>
+
+<div class="chartbox">
+  <div class="chartscroll"><svg id="chart" role="img" aria-label="Work-based learning flow across six entering classes"></svg></div>
+  <div id="keypane">
+    <div class="kgrp" id="kg_exit"></div>
+    <div class="kgrp" id="kg_wbl"></div>
+    <div class="kgrp" id="kg_failed"></div>
+    <div class="kgrp" id="kg_pool"></div>
+    <div id="kctrl"><div id="kprogs"></div><div id="kyears"></div></div>
+    <div class="kgrp" id="kg_entry"></div>
+  </div>
+  <div id="tip" role="dialog" aria-label="Term detail"></div>
+  <div id="overbox" hidden><p id="overmsg"></p></div>
+</div>
+
+<div class="panel">
+  <h2>Adjustable variables</h2>
+  <div class="tablescroll"><table class="prog" id="progtbl"></table></div>
+
+  <div class="ctrls">
+    <div class="grp">
+      <h3>Share of a class searching for a first placement in</h3>
+      <div id="att"></div>
+    </div>
+
+    <div class="grp">
+      <h3>Search success rate by term</h3>
+      <div id="suc"></div>
+    </div>
+
+    <div class="grp">
+      <h3>Repeat searchers</h3>
+      <div id="mods"></div>
+    </div>
+
+    <div class="grp">
+      <h3>Mix of experience types</h3>
+      <div id="mix"></div>
+      <div class="btns">
+        <button class="btn" id="reset">Reset to defaults</button>
+        <button class="btn" id="copytsv">Copy terms for Excel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <p><b>Reading the chart.</b> Each column is one term. The band along the bottom holds students who have not yet searched, the middle band holds those who searched and came up empty, and the four lanes above are placements made that term. A class arrives on the gold rail underneath and swoops up into the pool the term it becomes eligible. The window closes after senior spring, and whoever is still unplaced rises to the rail across the top and leaves.</p>
+  <p><b>Why the classes overlap.</b> A class is eligible for seven terms and a new one becomes eligible every three, so two classes are always searching at once and in every third term a third class joins them. A term's placements are those classes combined. The first and last few terms are thinner because only one class is in play, so read the steady state from the middle of the chart rather than its ends.</p>
+  <p><b>Placeholder figures.</b> Entering class sizes by program, search timing, success rates, and the type mix are all starting points to be replaced with the program's own numbers. Everyone who fails a search is assumed to search again the following term. The two senior terms take repeat searchers only.</p>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. SHAPE: six entering classes, each eligible for six terms,
+      a new one starting every three terms.
+   ============================================================ */
+var CLASSES=6, WINDOW=7, OFFSET=3;
+var N_TERMS=OFFSET*(CLASSES-1)+WINDOW;      /* 21 */
+var FIRST_SEARCH_TERMS=5;                   /* senior fall takes repeat searchers only */
+var YEAR_MIN=2000, YEAR_MAX=2100;
+var RETRY=100;                              /* everyone who fails searches again next term */
+
+var POSITIONS=["Sophomore spring","Summer after sophomore","Junior fall",
+               "Junior spring","Summer after junior","Senior fall","Senior spring"];
+
+var PROGRAMS=[
+  {id:"bsba",label:"Business Economics BSBA"},
+  {id:"econba",label:"Economics BA"},
+  {id:"econbs",label:"Economics BS"}
+];
+
+/* The whole calendar hangs off the year the first class enters. A class
+   entering in the fall becomes eligible two springs later, so everything
+   below is rebuilt whenever that one year changes. */
+var TERMS=[], COHORTS=[];
+function buildCalendar(firstEntryYear){
+  var seq=["SP","SM","FL"], names=["Spring","Summer","Fall"], y=firstEntryYear+2;
+  TERMS=[];
+  for(var i=0;i<N_TERMS;i++){
+    var k=i%3;
+    TERMS.push({index:i, tick:seq[k]+String(y).slice(2), name:names[k], year:y,
+                label:names[k]+" "+y, kind:(k===1?"summer":"acad")});
+    if(k===2)y++;
+  }
+  COHORTS=[];
+  for(var c=0;c<CLASSES;c++){
+    COHORTS.push({index:c, start:c*OFFSET, end:c*OFFSET+WINDOW-1,
+                  entryYear:firstEntryYear+c});
+  }
+}
+
+/* ============================================================
+   2. PARAMS
+   ============================================================ */
+var DEFAULTS={
+  program:"Economics",
+  firstYear:2027,  /* the fall the first entering class arrives */
+  on:{bsba:true, econba:true, econbs:true},
+  selected:null,   /* null = all entering classes, otherwise a cohort index */
+  /* students per entering class, by program */
+  sizes:[{bsba:30,econba:2,econbs:10},
+         {bsba:30,econba:2,econbs:10},
+         {bsba:30,econba:2,econbs:10},
+         {bsba:30,econba:2,econbs:10},
+         {bsba:30,econba:2,econbs:10},
+         {bsba:30,econba:2,econbs:10}],
+  att:[10,30,15,15,30,0,0],   /* share of a class searching first in each position; the senior year is forced to 0 */
+  suc:[70,70,70,70,70,70,70], /* first-search success rate by position */
+  mod2:125, modC:150,
+  mix:[85,10,5,0]             /* last entry is derived from the three above it */
+};
+var PARAMS=JSON.parse(JSON.stringify(DEFAULTS));
+
+/* ============================================================
+   3. CONFIG: every visual decision.
+   ============================================================ */
+var CONFIG={
+  canvas:{ width:1824, targetHeight:970, padLeft:362, padRight:54, padTop:46, padBottom:34 },
+  keyWidth:188,
+
+  /* bands top to bottom; members stack contiguously from the band baseline up */
+  groups:[
+    {id:"exit", kind:"rail", gapAbove:0, keyShift:0,
+     members:[{id:"exit",label:"No WBL before graduation"}]},
+    {id:"wbl", kind:"wbl", gapAbove:40, keyShift:30,
+     members:[{id:"oth",label:"Other approved"},
+              {id:"onc",label:"On-campus employment"},
+              {id:"res",label:"Faculty-led research"},
+              {id:"int",label:"Internship"}]},
+    {id:"failed", kind:"state", gapAbove:34, keyShift:18,
+     members:[{id:"f1",label:"One unsuccessful search"},
+              {id:"coach",label:"Experience Accelerator",
+               keyLabel:"Two unsuccessful, enrolled in<br>the Experience Accelerator"}]},
+    {id:"pool", kind:"state", gapAbove:16, keyShift:124,
+     members:[{id:"pool",label:"Not yet started searching"}]},
+    {id:"entry", kind:"rail", gapAbove:34,
+     members:[{id:"entry",label:"Students starting their sophomore spring"}]}
+  ],
+
+  colors:{
+    int:"#15284B", res:"#3CB4E5", onc:"#40C1AC", oth:"#7A6E9B",
+    coach:"#B0543E", f1:"#E0B5A9", pool:"#6E6B64",
+    entry:"#E7AB2A", exit:"#B0543E",
+    rule:"rgba(21,40,75,.20)", separator:"rgba(21,40,75,.07)"
+  },
+
+  /* node x positions and widths, as fractions of a column */
+  column:{ stateX:0.16, typeX:0.66, entryX:-0.26, nodeWidth:11, barWidth:22 },
+
+  ribbon:{ curve:0.5, opacity:0.34, entryOpacity:0.42, colorBy:"target" },
+  pale:0.18,   /* opacity of the part of a bar not belonging to the selected class */
+  zeroRule:0.5,/* opacity of the hairline standing in for an empty no-WBL stack */
+
+  axis:{ tickY:20 },
+
+  labels:{ keyMinGap:56, keyCtrlGap:28,
+           minPoolHeight:12, numberedTypes:["int"], minTypeHeight:9, minInsideHeight:13, minFailHeight:9 },
+
+  cohortLabel:{ gap:10, leading:11, bottomPad:2 },
+  exitLabel:{ gap:7, leading:10 }
+};
+
+var TYPE_IDS=["int","res","onc","oth"];   /* top to bottom on screen */
+var STATE_IDS=["coach","f1","pool"];      /* top to bottom on screen */
+var FAIL_TO={pool:"f1",f1:"coach",coach:"coach"};
+var MIX_LAST=TYPE_IDS.length-1;
+function laneLabel(id){
+  var out=id;
+  CONFIG.groups.forEach(function(g){g.members.forEach(function(m){if(m.id===id)out=m.label;});});
+  return out;
+}
+
+/* ============================================================
+   4. model(): params in, numbers out. No pixels.
+   ============================================================ */
+function cohortSize(P,i){
+  return PROGRAMS.reduce(function(a,pg){
+    return a+(P.on[pg.id]?(P.sizes[i][pg.id]||0):0);
+  },0);
+}
+
+function model(P){
+  var mix={};
+  TYPE_IDS.forEach(function(id,k){mix[id]=P.mix[k]/100;});
+
+  function runCohort(co){
+    var size=cohortSize(P,co.index);
+    var pool=size,f1=0,coach=0,steps=[];
+    for(var p=0;p<WINDOW;p++){
+      var last=(p===WINDOW-1);
+      var attempt=(p<FIRST_SEARCH_TERMS)?P.att[p]:0;
+      var stockIn={pool:pool,f1:f1,coach:coach};
+      var attempts={pool:Math.min(pool,size*attempt/100),
+                    f1:f1*RETRY/100, coach:coach*RETRY/100};
+      var b=P.suc[p]/100;
+      var rates={pool:Math.min(.95,b), f1:Math.min(.95,b*P.mod2/100),
+                 coach:Math.min(.95,b*P.modC/100)};
+      var placedFrom={}, failedFrom={}, placed=0;
+      STATE_IDS.forEach(function(id){
+        placedFrom[id]=attempts[id]*rates[id];
+        failedFrom[id]=attempts[id]-placedFrom[id];
+        placed+=placedFrom[id];
+      });
+      var byType={}; TYPE_IDS.forEach(function(id){byType[id]=placed*mix[id];});
+
+      var step={cohort:co,pos:p,term:co.start+p,last:last,stockIn:stockIn,attempts:attempts,
+                placedFrom:placedFrom,failedFrom:failedFrom,placed:placed,byType:byType,
+                failed:STATE_IDS.reduce(function(a,id){return a+failedFrom[id];},0),
+                exitFrom:null,carry:{},failTo:{}};
+
+      if(last){
+        /* the window closes: whoever is still in a lane and did not place leaves from it */
+        var ex={}; STATE_IDS.forEach(function(id){ex[id]=stockIn[id]-placedFrom[id];});
+        step.exitFrom=ex;
+        step.exitTotal=STATE_IDS.reduce(function(a,id){return a+ex[id];},0);
+        pool=0;f1=0;coach=0;
+      }else{
+        STATE_IDS.forEach(function(id){
+          step.carry[id]=stockIn[id]-attempts[id]+(FAIL_TO[id]===id?failedFrom[id]:0);
+          if(FAIL_TO[id]!==id)step.failTo[id]=failedFrom[id];
+        });
+        pool=step.carry.pool;
+        f1=step.carry.f1+failedFrom.pool;
+        coach=step.carry.coach+failedFrom.f1;
+      }
+      steps.push(step);
+    }
+    var placedTotal=steps.reduce(function(a,s){return a+s.placed;},0);
+    return {co:co,size:size,steps:steps,placed:placedTotal,unresolved:size-placedTotal};
+  }
+
+  var cohorts=COHORTS.map(runCohort);
+
+  var terms=TERMS.map(function(T){
+    var row={term:T,index:T.index,active:[],
+             stockIn:{pool:0,f1:0,coach:0},
+             attempts:{pool:0,f1:0,coach:0},
+             placedFrom:{pool:0,f1:0,coach:0},
+             byType:{}, placed:0, failed:0,
+             entry:0, entryCohort:null,
+             exit:0, exitFrom:{pool:0,f1:0,coach:0}, exitCohort:null,
+             carry:{pool:0,f1:0,coach:0}, failTo:{pool:0,f1:0}, byCohort:{}};
+    TYPE_IDS.forEach(function(id){row.byType[id]=0;});
+    return row;
+  });
+
+  cohorts.forEach(function(ch){
+    ch.steps.forEach(function(s){
+      var row=terms[s.term];
+      row.active.push(ch);
+      row.byCohort[ch.co.index]=s;
+      STATE_IDS.forEach(function(id){
+        row.stockIn[id]+=s.stockIn[id];
+        row.attempts[id]+=s.attempts[id];
+        row.placedFrom[id]+=s.placedFrom[id];
+      });
+      TYPE_IDS.forEach(function(id){row.byType[id]+=s.byType[id];});
+      row.placed+=s.placed; row.failed+=s.failed;
+      if(s.pos===0){row.entry+=ch.size; row.entryCohort=ch;}
+      if(s.last){
+        row.exit+=s.exitTotal; row.exitCohort=ch;
+        STATE_IDS.forEach(function(id){row.exitFrom[id]+=s.exitFrom[id];});
+      }else{
+        STATE_IDS.forEach(function(id){row.carry[id]+=s.carry[id];});
+        row.failTo.pool+=s.failTo.pool||0;
+        row.failTo.f1+=s.failTo.f1||0;
+      }
+    });
+  });
+
+  var totalIn=cohorts.reduce(function(a,c){return a+c.size;},0);
+  var placed=cohorts.reduce(function(a,c){return a+c.placed;},0);
+  return {cohorts:cohorts, terms:terms, totalIn:totalIn, placed:placed,
+          unresolved:totalIn-placed, mix:mix};
+}
+
+/* ============================================================
+   5. validate()
+   ============================================================ */
+function firstSearchTotal(){
+  return PARAMS.att.slice(0,FIRST_SEARCH_TERMS).reduce(function(a,b){return a+b;},0);
+}
+function mixHead(){
+  var t=0; for(var i=0;i<MIX_LAST;i++)t+=PARAMS.mix[i]; return t;
+}
+function anyProgram(){
+  return PROGRAMS.some(function(pg){return PARAMS.on[pg.id];});
+}
+function problems(){
+  var out=[], t=firstSearchTotal();
+  if(!anyProgram())return ["<b>No programs are selected.</b> Tick at least one to see the flow."];
+  if(t>100)out.push("The first four first-search shares add up to <b>"+t+"%</b>.");
+  var m=mixHead();
+  if(m>100)out.push("The experience mix adds up to <b>"+m+"%</b> before Other approved.");
+  if(out.length)out.push("Bring "+(out.length>1?"them":"it")+" back under 100 and the chart returns.");
+  return out;
+}
+
+/* ============================================================
+   6. layout()
+   ============================================================ */
+function layout(M){
+  var C=CONFIG, cv=C.canvas;
+  var plotW=cv.width-cv.padLeft-cv.padRight, cw=plotW/N_TERMS;
+
+  var max={};
+  C.groups.forEach(function(gr){
+    max[gr.id]=Math.max.apply(null,M.terms.map(function(r){
+      if(gr.id==="exit")return r.exit;
+      if(gr.id==="entry")return r.entry;
+      return gr.members.reduce(function(a,m){
+        return a+(gr.kind==="wbl"?r.byType[m.id]:r.stockIn[m.id]);
+      },0);
+    }).concat([1]));
+  });
+
+  var units=C.groups.reduce(function(a,g){return a+max[g.id];},0);
+  var gaps=C.groups.reduce(function(a,g){return a+g.gapAbove;},0);
+  var s=(cv.targetHeight-cv.padTop-cv.padBottom-gaps)/units;
+
+  var base={}, y=cv.padTop;
+  C.groups.forEach(function(gr){
+    y+=gr.gapAbove+max[gr.id]*s;
+    base[gr.id]=y;
+  });
+  var MBOT=base.entry;
+
+  return {
+    s:s, cw:cw, max:max, base:base, MBOT:MBOT,
+    topEdge:base.exit-max.exit*s,
+    height:MBOT+cv.padBottom,
+    colLeft:function(t){return cv.padLeft+t*cw;},
+    colMid:function(t){return cv.padLeft+t*cw+cw*0.5;},
+    xState:function(t){return cv.padLeft+t*cw+cw*C.column.stateX;},
+    xType:function(t){return cv.padLeft+t*cw+cw*C.column.typeX;},
+    xEntry:function(t){return cv.padLeft+t*cw+cw*C.column.entryX;},
+    stack:function(gr,vals){
+      var yy=this.base[gr.id], ss=this.s, out={};
+      gr.members.forEach(function(m){
+        var v=vals[m.id]||0;
+        out[m.id]={v:v,top:yy-v*ss,bot:yy};
+        yy-=v*ss;
+      });
+      return out;
+    }
+  };
+}
+
+/* ============================================================
+   7. render()
+   ============================================================ */
+var NS="http://www.w3.org/2000/svg";
+function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function tx(x,y,s,cls,anchor){var e=el("text",{x:x,y:y,"class":cls||"lanenum"});if(anchor)e.setAttribute("text-anchor",anchor);e.textContent=s;return e;}
+function tspans(x,y,cls,lines,anchor){
+  var e=el("text",{x:x,y:y,"class":cls});
+  if(anchor)e.setAttribute("text-anchor",anchor);
+  lines.forEach(function(ln,i){
+    var t=el("tspan",{x:x,dy:(i===0?0:CONFIG.cohortLabel.leading)});
+    ln.forEach(function(part){
+      var sp=el("tspan",part[1]?{"class":"b"}:{});
+      sp.textContent=part[0];
+      t.appendChild(sp);
+    });
+    e.appendChild(t);
+  });
+  return e;
+}
+function n0(v){return Math.round(v).toLocaleString();}
+function pct(v){return Math.round(v*100)+"%";}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function ribbon(x0,ya0,ya1,x1,yb0,yb1,fill,op){
+  var dx=(x1-x0)*CONFIG.ribbon.curve;
+  var d="M "+x0+" "+ya0+
+        " C "+(x0+dx)+" "+ya0+" "+(x1-dx)+" "+yb0+" "+x1+" "+yb0+
+        " L "+x1+" "+yb1+
+        " C "+(x1-dx)+" "+yb1+" "+(x0+dx)+" "+ya1+" "+x0+" "+ya1+" Z";
+  var e=el("path",{d:d,fill:fill});
+  if(op!=null)e.setAttribute("opacity",op);
+  return e;
+}
+
+/* When one entering class is selected, every node keeps its full aggregate
+   height but only that class's share is drawn in colour, with the rest left
+   pale. Ribbons and labels then belong to the selected class alone. */
+var ZERO_FLOW={placedFrom:{},failTo:{},carry:{},exitFrom:{},byType:{},stockIn:{},entry:0,exit:0};
+function g(o,k){return (o&&o[k])||0;}
+
+function renderChart(M,L,svg){
+  var C=CONFIG, s=L.s, nW=C.column.nodeWidth, bW=C.column.barWidth;
+  var sel=PARAMS.selected;
+  var gridLayer=el("g",{}), linkLayer=el("g",{}), nodeLayer=el("g",{}), labelLayer=el("g",{});
+  [gridLayer,linkLayer,nodeLayer,labelLayer].forEach(function(gg){svg.appendChild(gg);});
+
+  for(var i=1;i<N_TERMS;i++){
+    gridLayer.appendChild(el("line",{x1:L.colLeft(i),x2:L.colLeft(i),y1:L.topEdge-8,y2:L.MBOT+6,
+      stroke:C.colors.separator,"stroke-width":1}));
+  }
+
+  var wblG=C.groups[1], failedG=C.groups[2], poolG=C.groups[3];
+
+  /* the values whose ribbons and labels are drawn */
+  function flow(r){
+    if(sel==null)return r;
+    var st=r.byCohort[sel];
+    if(!st)return ZERO_FLOW;
+    return {placedFrom:st.placedFrom, failTo:st.failTo||{}, carry:st.carry||{},
+            exitFrom:st.exitFrom||{}, byType:st.byType, stockIn:st.stockIn,
+            entry:(st.pos===0?M.cohorts[sel].size:0), exit:(st.exitTotal||0)};
+  }
+
+  var N=M.terms.map(function(r,t){
+    var f=flow(r), o={state:{},type:{},entry:null,exit:null,f:f};
+    /* a node spans the aggregate; its lit part sits at the top */
+    function mk(x,w,full,lit,q){
+      return {x:x,w:w,v:full,lit:lit,top:q.top,bot:q.bot,
+              litBot:q.top+lit*s, out:q.top, inn:q.top+lit*s};
+    }
+    var fs=L.stack(failedG,r.stockIn);
+    failedG.members.forEach(function(m){
+      o.state[m.id]=mk(L.xState(t),bW,fs[m.id].v,g(f.stockIn,m.id),fs[m.id]);
+    });
+    var ps=L.stack(poolG,r.stockIn);
+    o.state.pool=mk(L.xState(t),bW,ps.pool.v,g(f.stockIn,"pool"),ps.pool);
+    var ts=L.stack(wblG,r.byType);
+    wblG.members.forEach(function(m){
+      var q=ts[m.id];
+      o.type[m.id]={x:L.xType(t),w:bW,v:q.v,lit:g(f.byType,m.id),top:q.top,bot:q.bot,
+                    litBot:q.top+g(f.byType,m.id)*s, inn:q.top};
+    });
+    if(r.entry>0)o.entry={x:L.xEntry(t),v:r.entry,lit:f.entry,
+                          top:L.base.entry-r.entry*s,bot:L.base.entry,
+                          litBot:L.base.entry-r.entry*s+f.entry*s};
+    /* an exit under half a student would render as a label pointing at a 0 */
+    if(r.exit>=0.5)o.exit={x:L.xType(t),w:bW,v:r.exit,lit:f.exit,
+                        top:L.base.exit-r.exit*s,bot:L.base.exit,
+                        litBot:L.base.exit-r.exit*s+f.exit*s,
+                        inn:L.base.exit-r.exit*s};
+    return o;
+  });
+
+  /* ---- links, drawn only for whatever flow() returned ----
+     Out of each state node, from the top down: the exit (which rises highest,
+     to the rail above the placements), then placements, then the fail step,
+     then the carry, so the carry leaves along the lit band's bottom edge. */
+  var draw=[], byKey={};
+  function push(d){draw.push(d);byKey[d.t+"|"+d.from+"|"+d.to+"|"+d.kind]=d;}
+  M.terms.forEach(function(r,t){
+    var f=N[t].f;
+    STATE_IDS.forEach(function(id){
+      var src=N[t].state[id], cur=src.out, x0=src.x+src.w;
+      var xv=g(f.exitFrom,id);
+      if(xv>0){ push({kind:"exit",from:id,to:"exit",t:t,x0:x0,y0:cur,h:xv*s}); cur+=xv*s; }
+      TYPE_IDS.forEach(function(ty){
+        var v=g(f.placedFrom,id)*M.mix[ty];
+        if(v<=0)return;
+        push({kind:"place",from:id,to:ty,t:t,x0:x0,y0:cur,h:v*s}); cur+=v*s;
+      });
+      var fv=(id==="pool")?g(f.failTo,"pool"):(id==="f1"?g(f.failTo,"f1"):0);
+      if(fv>0){ push({kind:"fail",from:id,to:FAIL_TO[id],t:t,x0:x0,y0:cur,h:fv*s}); cur+=fv*s; }
+      var cv=g(f.carry,id);
+      if(cv>0){ push({kind:"carry",from:id,to:id,t:t,x0:x0,y0:cur,h:cv*s}); cur+=cv*s; }
+    });
+  });
+
+  M.terms.forEach(function(r,t){
+    if(N[t].exit){
+      var ex=N[t].exit;
+      STATE_IDS.forEach(function(src){
+        var d=byKey[t+"|"+src+"|exit|exit"]; if(!d)return;
+        d.x1=ex.x; d.y1=ex.inn; ex.inn+=d.h;
+      });
+    }
+    TYPE_IDS.forEach(function(ty){
+      var dst=N[t].type[ty];
+      STATE_IDS.forEach(function(src){
+        var d=byKey[t+"|"+src+"|"+ty+"|place"]; if(!d)return;
+        d.x1=dst.x; d.y1=dst.inn; dst.inn+=d.h;
+      });
+    });
+    /* state nodes next term fill upward from the bottom of their lit band:
+       the arrival from the lane below sits lowest, the carry rides on top */
+    if(t+1<N_TERMS){
+      STATE_IDS.forEach(function(id){
+        var dst=N[t+1].state[id];
+        var from=(id==="f1")?"pool":(id==="coach"?"f1":null);
+        if(from){
+          var fd=byKey[t+"|"+from+"|"+id+"|fail"];
+          if(fd){dst.inn-=fd.h; fd.x1=dst.x; fd.y1=dst.inn;}
+        }
+        var cd=byKey[t+"|"+id+"|"+id+"|carry"];
+        if(cd){dst.inn-=cd.h; cd.x1=dst.x; cd.y1=dst.inn;}
+      });
+    }
+  });
+
+  /* entry ribbons: the rail node up into that term's pool node */
+  M.terms.forEach(function(r,t){
+    var e=N[t].entry; if(!e||e.lit<=0)return;
+    var dst=N[t].state.pool;
+    draw.push({kind:"entry",t:t,x0:e.x+nW,y0:e.top,h:e.lit*s,
+               x1:dst.x,y1:(sel==null?dst.bot-e.lit*s:dst.top)});
+  });
+
+  draw.forEach(function(d){
+    if(d.x1==null)return;
+    var color, op=C.ribbon.opacity;
+    if(d.kind==="entry"){color=C.colors.entry;op=C.ribbon.entryOpacity;}
+    else if(d.kind==="exit")color=C.colors.exit;
+    else if(d.kind==="fail")color=C.colors[d.to];
+    else if(d.kind==="place"&&C.ribbon.colorBy==="target")color=C.colors[d.to];
+    else color=C.colors[d.from];
+    linkLayer.appendChild(ribbon(d.x0,d.y0,d.y0+d.h,d.x1,d.y1,d.y1+d.h,color,op));
+  });
+
+  /* ---- nodes: lit share on top, the rest of the class pale beneath ---- */
+  function piece(x,top,bot,fill,w,pale){
+    if(bot-top<=0.2)return;
+    var a={x:x,y:top,width:w,height:bot-top,fill:fill};
+    if(pale)a.opacity=C.pale;
+    nodeLayer.appendChild(el("rect",a));
+  }
+  function node(nd,fill,w){
+    if(sel==null){ piece(nd.x,nd.top,nd.bot,fill,w,false); return; }
+    piece(nd.x,nd.top,nd.litBot,fill,w,false);
+    piece(nd.x,nd.litBot,nd.bot,fill,w,true);
+  }
+  function shown(nd){return sel==null?nd.v:nd.lit;}
+
+  M.terms.forEach(function(r,t){
+    STATE_IDS.forEach(function(id){ node(N[t].state[id],C.colors[id],N[t].state[id].w); });
+
+    var pl=N[t].state.pool, pv=shown(pl);
+    if(pv>0 && (sel==null?pl.bot-pl.top:pl.litBot-pl.top)>C.labels.minPoolHeight)
+      labelLayer.appendChild(tx(pl.x+pl.w/2,(pl.top+(sel==null?pl.bot:pl.litBot))/2+3.5,
+        n0(pv),"poolnum","middle"));
+
+    /* one unsuccessful search reads inside its own bar */
+    var f1n=N[t].state.f1, f1v=shown(f1n), f1Bot=(sel==null?f1n.bot:f1n.litBot);
+    if(f1v>=0.5 && f1Bot-f1n.top>C.labels.minFailHeight)
+      labelLayer.appendChild(tx(f1n.x+f1n.w/2,(f1n.top+f1Bot)/2+3.5,n0(f1v),"failnum","middle"));
+    /* the Accelerator count sits just above its sliver */
+    var fcn=N[t].state.coach, fcv=shown(fcn);
+    if(fcv>=0.5)
+      labelLayer.appendChild(tx(fcn.x+fcn.w/2,fcn.top-5,n0(fcv),"accelnum","middle"));
+
+    TYPE_IDS.forEach(function(id){
+      var nd=N[t].type[id];
+      node(nd,C.colors[id],bW);
+      var v=shown(nd);
+      if(C.labels.numberedTypes.indexOf(id)<0||v<0.5)return;
+      var litBot=(sel==null?nd.bot:nd.litBot), mid=(nd.top+litBot)/2+3.5;
+      /* inside the bar where it fits, otherwise just outside it */
+      if(litBot-nd.top>=C.labels.minInsideHeight)
+        labelLayer.appendChild(tx(nd.x+bW/2,mid,n0(v),"intnum","middle"));
+      else if(nd.bot-nd.top>C.labels.minTypeHeight)
+        labelLayer.appendChild(tx(nd.x+bW+4,mid,n0(v),"lanenum"));
+    });
+
+    if(N[t].entry){
+      var e=N[t].entry;
+      node(e,C.colors.entry,nW);
+      if(sel==null||e.lit>0){
+        var CL=C.cohortLabel, yr=r.entryCohort.co.entryYear;
+        labelLayer.appendChild(tspans(e.x-CL.gap, e.bot-CL.bottomPad-2*CL.leading, "cohlab",
+          [[[n0(shown(e)),true],[" students from the",false]],
+           [["entering class of ",false],[String(yr),true]],
+           [["starting their Soph Spring",false]]], "end"));
+      }
+    }
+    var exNode=N[t].exit, exShown=exNode?shown(exNode):0;
+    if(exShown<0.5){
+      var bx=L.xType(t);
+      labelLayer.appendChild(el("line",{x1:bx,x2:bx+bW,y1:L.base.exit,y2:L.base.exit,
+        stroke:C.colors.exit,"stroke-width":1,opacity:C.zeroRule}));
+      labelLayer.appendChild(tx(bx+bW+4,L.base.exit+3.5,"0","zeronum"));
+    }
+    if(N[t].exit){
+      var x=N[t].exit, EL=C.exitLabel, yr2=r.exitCohort.co.entryYear;
+      node(x,C.colors.exit,bW);
+      if(exShown>=0.5){
+        labelLayer.appendChild(tx(x.x+bW+4,(x.top+(sel==null?x.bot:x.litBot))/2+3.5,n0(shown(x)),"exitnum"));
+        var lab=el("text",{x:x.x+bW/2,y:x.top-EL.gap-EL.leading,"class":"exitlab","text-anchor":"middle"});
+        [[["Entering class of ",false],[String(yr2),true]],[["who did not secure WBL",false]]]
+          .forEach(function(ln,i){
+            var t2=el("tspan",{x:x.x+bW/2,dy:(i===0?0:EL.leading)});
+            ln.forEach(function(part){
+              var sp=el("tspan",part[1]?{"class":"b"}:{});
+              sp.textContent=part[0]; t2.appendChild(sp);
+            });
+            lab.appendChild(t2);
+          });
+        labelLayer.appendChild(lab);
+      }
+    }
+  });
+
+  M.terms.forEach(function(r,t){
+    svg.appendChild(tx(L.colMid(t),L.MBOT+C.axis.tickY,r.term.tick,"tick","middle"));
+    var hit=el("rect",{x:L.colLeft(t),y:L.topEdge-10,width:L.cw,
+      height:L.MBOT-L.topEdge+20,fill:"transparent","class":"colband"});
+    hit.addEventListener("click",function(ev){openPanel(M,r,ev);});
+    svg.appendChild(hit);
+  });
+}
+
+/* The key is HTML pinned over the left edge, so the flow scrolls behind it
+   and the class filters can live inside it. */
+function buildKey(){
+  function items(gr){
+    return gr.members.slice().reverse().map(function(m){
+      return "<div class='kitem'><span class='klab'>"+(m.keyLabel||esc(m.label))+"</span>"+
+             "<span class='ksw' style='background:"+CONFIG.colors[m.id]+"'></span></div>";
+    }).join("");
+  }
+  CONFIG.groups.forEach(function(gr){
+    document.getElementById("kg_"+gr.id).innerHTML=items(gr);
+  });
+  document.getElementById("kprogs").innerHTML=PROGRAMS.map(function(pg,j){
+    return "<label class='krow' for='pg"+j+"'><span>"+esc(pg.label)+"</span>"+
+           "<input type='checkbox' id='pg"+j+"'></label>";
+  }).join("");
+  var yrs="<label class='krow' for='ryall'><span>All entering classes</span>"+
+          "<input type='radio' name='cohortsel' id='ryall' value=''></label>";
+  COHORTS.forEach(function(co,i){
+    yrs+="<label class='krow' for='ry"+i+"'><span id='rylab"+i+"'></span>"+
+         "<input type='radio' name='cohortsel' id='ry"+i+"' value='"+i+"'></label>";
+  });
+  document.getElementById("kyears").innerHTML=yrs;
+  document.querySelectorAll("#kprogs input,#kyears input").forEach(function(c){
+    c.addEventListener("change",readUI);
+  });
+}
+
+function placeKey(L){
+  var C=CONFIG, s=L.s;
+  /* Each group starts from its own band, nudged down by its keyShift, but
+     never closer than keyMinGap to the group above, so the categories stay
+     distinct whatever the data does to the band heights. */
+  var below=null;
+  ["exit","wbl","failed","pool"].forEach(function(id){
+    var gr=C.groups.filter(function(x){return x.id===id;})[0];
+    var want=L.base[id]-L.max[id]*s+2+(gr.keyShift||0);
+    var top=(below==null)?want:Math.max(want,below+C.labels.keyMinGap);
+    var elm=document.getElementById("kg_"+id);
+    elm.style.top=Math.round(top)+"px";
+    below=top+elm.offsetHeight;
+  });
+  /* the controls sit just under the last key item */
+  document.getElementById("kctrl").style.top=Math.round(below+C.labels.keyCtrlGap)+"px";
+  /* the gold item stays level with the labels on the gold bars */
+  var CL=C.cohortLabel;
+  document.getElementById("kg_entry").style.top=
+    Math.round(L.MBOT-CL.bottomPad-2*CL.leading-10)+"px";
+  document.getElementById("keypane").style.height=Math.round(L.height)+"px";
+}
+
+/* ---------- click panel ---------- */
+var tip=document.getElementById("tip"), cbox=document.querySelector(".chartbox");
+function panelBody(M,r){
+  function row(label,val,cls,head){
+    return "<tr"+(head?" class='head'":"")+"><td class='lab "+(cls||"")+"'>"+label+"</td>"+
+           "<td class='v'>"+n0(val)+"</td></tr>";
+  }
+  /* the card follows whatever the chart is showing */
+  var sel=PARAMS.selected, v=r, who=null;
+  if(sel!=null){
+    var st=r.byCohort[sel];
+    who=M.cohorts[sel].co.entryYear;
+    v=st?{attempts:st.attempts, placed:st.placed, failed:st.failed, byType:st.byType,
+          entry:(st.pos===0?M.cohorts[sel].size:0), exit:(st.exitTotal||0)}
+        :{attempts:{pool:0,f1:0,coach:0}, placed:0, failed:0, byType:{}, entry:0, exit:0};
+  }
+  var seeking=v.attempts.pool+v.attempts.f1+v.attempts.coach;
+  var names=r.active.map(function(ch){return ch.co.entryYear;}).join(" and ");
+  var out="<span class='tt'>"+esc(r.term.label)+"</span>"+
+    "<span class='ts'>"+(who!=null?"Entering class of "+who:"Classes entering fall "+names)+"</span>"+
+    "<table><tbody>"+
+    row("Seeking WBL this term",seeking,"",true)+
+    row("First-time searchers",v.attempts.pool,"i1")+
+    row("First failed search",v.attempts.f1,"i1")+
+    row("Experience Accelerator",v.attempts.coach,"i1")+
+    row("Placed",v.placed,"",true);
+  TYPE_IDS.forEach(function(id){
+    out+="<tr><td class='lab i1'><span class='dot' style='background:"+CONFIG.colors[id]+"'></span>"+
+         laneLabel(id)+"</td><td class='v'>"+n0(v.byType[id]||0)+"</td></tr>";
+  });
+  out+=row("Unsuccessful this term",v.failed,"",true);
+  if(v.entry>0)out+=row("Class arriving",v.entry,"",true);
+  if(v.exit>0)out+=row("No WBL before graduation",v.exit,"",true);
+  return out+"</tbody></table>";
+}
+
+function openPanel(M,r,ev){
+  tip.innerHTML="<button class='tipx' type='button' aria-label='Close'>×</button>"+panelBody(M,r);
+  tip.querySelector(".tipx").addEventListener("click",closePanel);
+  tip.classList.add("open");
+  var b=cbox.getBoundingClientRect();
+  var x=ev.clientX-b.left+16, y=ev.clientY-b.top-10;
+  if(x+276>b.width)x=ev.clientX-b.left-276;
+  if(x<CONFIG.keyWidth)x=CONFIG.keyWidth+4;
+  tip.style.left=x+"px";
+  tip.style.top=Math.max(0,Math.min(y,b.height-tip.offsetHeight-6))+"px";
+}
+function closePanel(){tip.classList.remove("open");}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closePanel();});
+
+function render(M){
+  var L=layout(M);
+  var svg=document.getElementById("chart");
+  svg.setAttribute("viewBox","0 0 "+CONFIG.canvas.width+" "+Math.round(L.height));
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  closePanel();
+  renderChart(M,L,svg);
+  placeKey(L);
+}
+
+/* ============================================================
+   8. controls
+   ============================================================ */
+function buildControls(){
+  var h="<thead><tr><th class='first'>Entering class</th>"+
+    PROGRAMS.map(function(pg,i){
+      return "<th id='th"+i+"'>"+esc(pg.label)+"</th>";
+    }).join("")+"<th class='first' style='text-align:right'>Total</th></tr></thead><tbody>";
+  COHORTS.forEach(function(co,i){
+    h+="<tr><td class='first'>"+
+       (i===0 ? "Fall <input type='number' class='yrin' id='firstYear' min='"+YEAR_MIN+
+                "' max='"+YEAR_MAX+"' step='1' aria-label='Fall the first class enters'>"
+              : "<span id='ylab"+i+"'></span>")+
+       "<span class='en' id='elig"+i+"'></span></td>"+
+       PROGRAMS.map(function(pg,j){
+         return "<td id='td"+i+"_"+j+"'><input type='number' class='numin' id='sz"+i+"_"+j+
+                "' min='0' max='5000' step='1' aria-label='"+esc(pg.label)+" students, class "+(i+1)+"'></td>";
+       }).join("")+
+       "<td class='first' style='text-align:right' id='rowtot"+i+"'></td></tr>";
+  });
+  h+="</tbody>";
+  document.getElementById("progtbl").innerHTML=h;
+
+  var a="";
+  POSITIONS.forEach(function(p,i){
+    if(i>=FIRST_SEARCH_TERMS)return;
+    var sl="<input type='range' id='at"+i+"' min='0' max='100' step='1'>";
+    if(i===FIRST_SEARCH_TERMS-1)sl="<div class='capwrap' id='capwrap'>"+sl+"<span class='capzone'></span></div>";
+    a+="<div class='row'><label for='at"+i+"'>"+p+"</label><output id='at"+i+"_o'></output></div>"+sl;
+  });
+  a+="<p class='sub' id='att_total'></p>";
+  document.getElementById("att").innerHTML=a;
+
+  var u="";
+  POSITIONS.forEach(function(p,i){
+    u+="<div class='row'><label for='su"+i+"'>"+p+"</label><output id='su"+i+"_o'></output></div>"+
+       "<input type='range' id='su"+i+"' min='5' max='100' step='1'>";
+  });
+  document.getElementById("suc").innerHTML=u;
+
+  var m="";
+  [["mod2","Second search"],["modC","Enrolled in Experience Accelerator"]].forEach(function(p){
+    m+="<div class='row'><label for='"+p[0]+"'>"+p[1]+"</label><output id='"+p[0]+"_o'></output></div>"+
+       "<input type='range' id='"+p[0]+"' min='30' max='200' step='5'>";
+  });
+  document.getElementById("mods").innerHTML=m;
+
+  var x="";
+  TYPE_IDS.forEach(function(id,i){
+    var sl="<input type='range' id='mx"+i+"' min='0' max='100' step='1'"+(i===MIX_LAST?" disabled":"")+">";
+    if(i===MIX_LAST)sl="<div class='capwrap' id='capmix'>"+sl+"<span class='capzone'></span></div>";
+    x+="<div class='row'><label for='mx"+i+"'><span class='swd' style='background:"+CONFIG.colors[id]+
+       "'></span>"+laneLabel(id)+"</label><output id='mx"+i+"_o'></output></div>"+sl;
+  });
+  document.getElementById("mix").innerHTML=x;
+
+  document.querySelectorAll("input[type=range]").forEach(function(r){r.addEventListener("input",readUI);});
+  document.querySelectorAll(".numin").forEach(function(r){r.addEventListener("input",readUI);});
+  document.getElementById("firstYear").addEventListener("input",readUI);
+  document.getElementById("reset").addEventListener("click",function(){
+    PARAMS=JSON.parse(JSON.stringify(DEFAULTS));writeUI();go();
+  });
+  document.getElementById("copytsv").addEventListener("click",function(){
+    var btn=this, M=model(PARAMS);
+    var head=["Term","Classes active","Seeking","Placed"].concat(TYPE_IDS.map(laneLabel))
+             .concat(["Failed","Starting sophomore spring","No WBL before graduation"]);
+    var lines=[head.join("\t")];
+    M.terms.forEach(function(r){
+      lines.push([r.term.label,r.active.length,
+        Math.round(r.attempts.pool+r.attempts.f1+r.attempts.coach),Math.round(r.placed)]
+        .concat(TYPE_IDS.map(function(id){return Math.round(r.byType[id]);}))
+        .concat([Math.round(r.failed),r.entry?Math.round(r.entry):"",r.exit?Math.round(r.exit):""]).join("\t"));
+    });
+    lines.push("");
+    lines.push(["Entering class","Students","Placed","Placed %","No WBL"].join("\t"));
+    M.cohorts.forEach(function(ch){
+      lines.push(["Fall "+ch.co.entryYear,ch.size,Math.round(ch.placed),
+        ch.size?Math.round(ch.placed/ch.size*100)+"%":"",Math.round(ch.unresolved)].join("\t"));
+    });
+    var txt=lines.join("\n");
+    function flash(t){btn.textContent=t;setTimeout(function(){btn.textContent="Copy terms for Excel";},1700);}
+    try{ navigator.clipboard.writeText(txt).then(function(){flash("Copied");},function(){flash("Copy blocked");}); }
+    catch(e){ flash("Copy blocked"); }
+  });
+}
+
+function capLast(){
+  var head=0;
+  for(var i=0;i<FIRST_SEARCH_TERMS-1;i++)head+=PARAMS.att[i];
+  document.getElementById("capwrap").style.setProperty("--cap",Math.max(0,100-head));
+  return Math.max(0,100-head);
+}
+function capMix(){
+  var cap=Math.max(0,100-mixHead());
+  document.getElementById("capmix").style.setProperty("--cap",cap);
+  document.getElementById("mx"+MIX_LAST).value=cap;
+  PARAMS.mix[MIX_LAST]=cap;
+  return cap;
+}
+
+function writeUI(){
+  document.getElementById("firstYear").value=PARAMS.firstYear;
+  PROGRAMS.forEach(function(pg,j){document.getElementById("pg"+j).checked=!!PARAMS.on[pg.id];});
+  document.getElementById(PARAMS.selected==null?"ryall":"ry"+PARAMS.selected).checked=true;
+  COHORTS.forEach(function(co,i){
+    PROGRAMS.forEach(function(pg,j){document.getElementById("sz"+i+"_"+j).value=PARAMS.sizes[i][pg.id];});
+  });
+  POSITIONS.forEach(function(p,i){
+    if(i<FIRST_SEARCH_TERMS)document.getElementById("at"+i).value=PARAMS.att[i];
+    document.getElementById("su"+i).value=PARAMS.suc[i];
+  });
+  ["mod2","modC"].forEach(function(k){document.getElementById(k).value=PARAMS[k];});
+  TYPE_IDS.forEach(function(id,i){document.getElementById("mx"+i).value=PARAMS.mix[i];});
+  capLast();capMix();labels();
+}
+function readUI(){
+  var fy=parseInt(document.getElementById("firstYear").value,10);
+  if(!isNaN(fy)&&fy>=YEAR_MIN&&fy<=YEAR_MAX){PARAMS.firstYear=fy;buildCalendar(fy);}
+  PROGRAMS.forEach(function(pg,j){PARAMS.on[pg.id]=document.getElementById("pg"+j).checked;});
+  var rsel=document.querySelector("input[name=cohortsel]:checked");
+  PARAMS.selected=(rsel&&rsel.value!=="")?+rsel.value:null;
+  COHORTS.forEach(function(co,i){
+    PROGRAMS.forEach(function(pg,j){
+      var v=parseInt(document.getElementById("sz"+i+"_"+j).value,10);
+      PARAMS.sizes[i][pg.id]=isNaN(v)?0:Math.max(0,v);
+    });
+  });
+  for(var i=0;i<FIRST_SEARCH_TERMS-1;i++)PARAMS.att[i]=+document.getElementById("at"+i).value;
+  var cap=capLast();
+  var last=document.getElementById("at"+(FIRST_SEARCH_TERMS-1));
+  PARAMS.att[FIRST_SEARCH_TERMS-1]=Math.min(+last.value,cap);
+  last.value=PARAMS.att[FIRST_SEARCH_TERMS-1];
+  for(var z=FIRST_SEARCH_TERMS;z<WINDOW;z++)PARAMS.att[z]=0;
+  POSITIONS.forEach(function(p,j){PARAMS.suc[j]=+document.getElementById("su"+j).value;});
+  ["mod2","modC"].forEach(function(k){PARAMS[k]=+document.getElementById(k).value;});
+  for(var m=0;m<MIX_LAST;m++)PARAMS.mix[m]=+document.getElementById("mx"+m).value;
+  capMix();
+  labels();go();
+}
+function labels(){
+  /* program columns dim and lock when unticked */
+  PROGRAMS.forEach(function(pg,j){
+    var on=!!PARAMS.on[pg.id];
+    document.getElementById("th"+j).classList.toggle("off",!on);
+    COHORTS.forEach(function(co,i){
+      document.getElementById("td"+i+"_"+j).classList.toggle("off",!on);
+      document.getElementById("sz"+i+"_"+j).disabled=!on;
+    });
+  });
+  COHORTS.forEach(function(co,i){
+    document.getElementById("rowtot"+i).textContent=n0(cohortSize(PARAMS,i));
+  });
+
+  COHORTS.forEach(function(co,i){
+    if(i>0)document.getElementById("ylab"+i).textContent="Fall "+co.entryYear;
+    document.getElementById("elig"+i).textContent="eligible from "+TERMS[co.start].label;
+    document.getElementById("rylab"+i).textContent="Entering "+co.entryYear;
+  });
+  document.querySelectorAll("#kyears .krow").forEach(function(r){
+    r.classList.toggle("on",r.querySelector("input").checked);
+  });
+  var tot=firstSearchTotal(), left=100-tot, out=document.getElementById("att_total");
+  out.classList.toggle("over",left<0);
+  out.textContent = left<0
+    ? "Remaining share: "+left+"%. These terms claim more students than a class has."
+    : (left===0 ? "Remaining share: 0%. Every student searches at least once."
+                : "Remaining share: "+left+"%, the students who never search a first time.");
+  POSITIONS.forEach(function(p,i){
+    if(i<FIRST_SEARCH_TERMS)document.getElementById("at"+i+"_o").textContent=PARAMS.att[i]+"%";
+    document.getElementById("su"+i+"_o").textContent=PARAMS.suc[i]+"%";
+  });
+  ["mod2","modC"].forEach(function(k){
+    var v=PARAMS[k];
+    document.getElementById(k+"_o").textContent =
+      v>100 ? (v/100).toFixed(2)+"x more successful"
+            : (v<100 ? (v/100).toFixed(2)+"x as successful" : "same success rate");
+  });
+  var mleft=100-mixHead();
+  TYPE_IDS.forEach(function(id,i){
+    var o=document.getElementById("mx"+i+"_o");
+    o.textContent=(i===MIX_LAST?Math.max(0,mleft):PARAMS.mix[i])+"%";
+    if(i===MIX_LAST){o.classList.toggle("over",mleft<0); if(mleft<0)o.textContent=mleft+"%";}
+  });
+  var name=PARAMS.program.trim();
+  document.getElementById("title").textContent=(name?name+" ":"Program ")+"work-based learning";
+  document.title=(name?name+" WBL Flow":"Department WBL Flow");
+}
+
+/* ============================================================
+   9. go()
+   ============================================================ */
+function setHold(errs){
+  var bad=errs.length>0;
+  document.body.classList.toggle("invalid",bad);
+  document.getElementById("overbox").hidden=!bad;
+  if(bad){closePanel();document.getElementById("overmsg").innerHTML=errs.join(" ");}
+}
+function go(){
+  var errs=problems();
+  setHold(errs);
+  if(errs.length)return;
+  render(model(PARAMS));
+}
+
+buildCalendar(PARAMS.firstYear);
+buildControls();buildKey();writeUI();go();
+})();
+</script>
+<script>
+/* ?frame: report height so the Econ page can size this frame */
+(function(){
+  if(!document.documentElement.classList.contains("frame")) return;
+  function send(){ parent.postMessage({frameHeight:Math.ceil(document.body.getBoundingClientRect().height)},"*"); }
+  window.addEventListener("load",send);
+  window.addEventListener("resize",send);
+  if(window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+})();
+</script>
+
+</body></html>
