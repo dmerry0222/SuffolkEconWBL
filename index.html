@@ -190,6 +190,9 @@ a.scard:hover .sarrow,a.nrow:hover .sarrow,a.scard:active .sarrow,a.nrow:active 
 .cm-lead{font-style:italic}
 .cm ol{margin:0;padding-left:22px;font-size:.9375rem;line-height:1.5}
 .cm ol li{margin:0 0 3px}
+.cm-spend{list-style:none;margin:0;padding:0;font-size:.9375rem;line-height:1.5}
+.cm-spend li{margin:0 0 2px}
+.cm-spend li.tot{margin-top:6px;font-weight:600;color:var(--navy)}
 @media (max-width:900px){.curgrid{grid-template-columns:1fr;gap:0}.curlink{justify-content:center;padding:6px 0}.curlink svg{transform:rotate(90deg)}}
 
 /* internship postings table: each row opens its posting */
@@ -574,6 +577,15 @@ document.getElementById("curgrid").innerHTML=CUR.map(function(x,i){
     "<span class='cur-ord'>"+x.ord+"</span>"+
     "<span class='cur-ds'>"+md(c.tagline||"")+"</span></button>";
 }).join("").replace(/<\/button><button/g,"</button>"+ARROW+"<button");
+var SPEND={
+  "CE-100":["10 sections/AY in CEDS teaching load","35 more sections at $2,500/section","$87,500 projected new spending per FY"],
+  "CE-200":["20 sections/AY in CEDS teaching load","25 more sections at $2,500/section","Replaces $35,000 of current instruction (10xCAS-201, 2xENG-202, THETR-291, ENVS/CHEM-311)","$27,500 projected new spending per FY"]
+};
+function spendBlock(course){
+  var L=SPEND[course]; if(!L) return "";
+  return "<h4 class='cm-h'>Projected New Spending</h4><ul class='cm-spend'>"+
+    L.map(function(t,i){return "<li"+(i===L.length-1?" class='tot'":"")+">"+eh(t)+"</li>";}).join("")+"</ul><hr class='cm-rule'>";
+}
 function curModal(i){
   var x=CUR[i], c=CE[x.course];
   var title=x.course==="WBL"?"Career Integration: <span class='mt-a'>Work-Based Learning</span>"
@@ -584,7 +596,7 @@ function curModal(i){
       (c.prereq?"<div class='cm-pre'><span class='cm-k'>Prereq:</span><span class='cm-v'>"+md(c.prereq)+"</span></div>":"")+
     "</div>"+
     (c.timing?"<div class='cm-seq'><span class='cm-k'>Timing:</span><span class='cm-v'>"+md(c.timing)+"</span></div>":"")+
-    "</div><hr class='cm-rule'>"+
+    "</div><hr class='cm-rule'>"+spendBlock(x.course)+
     (c.description?"<h4 class='cm-h'>"+md(c.description_heading||"Course Description")+"</h4><p>"+md(c.description)+"</p><hr class='cm-rule'>":"")+
     ((c.criteria&&c.criteria.length)?"<h4 class='cm-h'>"+md(c.criteria_heading||"Criteria")+"</h4><ol>"+
       c.criteria.map(function(k){return "<li><b>"+md(k.name)+":</b> "+md(k.description)+"</li>";}).join("")+"</ol>":"")+
